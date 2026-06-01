@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crime &amp; Inequality in Malaysia — Is Malaysia Getting Safer?</title>
+
+  <!-- Google Fonts: DM Serif Display (headlines) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <!-- Vega-Lite -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <style>
+    /* ─── Reset & base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:       #c0392b;
+      --red-light: #fde8e6;
+      --red-mid:   #e74c3c;
+      --navy:      #1a2332;
+      --navy-mid:  #2c3e50;
+      --sand:      #f5f0eb;
+      --sand-dark: #ede8e1;
+      --ink:       #22211f;
+      --ink-mid:   #4a4845;
+      --ink-light: #7a7773;
+      --white:     #ffffff;
+      --gold:      #d4a017;
+      --col-max:   960px;
+      --col-wide:  820px;
+      --col-text:  660px;
+    }
+
+    html { font-size: 17px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--sand);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Typography ───────────────────────────────────── */
+    h1, h2, h3 {
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--navy);
+    }
+
+    h1 { font-size: 3.4rem; letter-spacing: -0.5px; }
+    h2 { font-size: 2rem; margin-bottom: 0.6rem; }
+    h3 { font-size: 1.3rem; margin-bottom: 0.4rem; color: var(--ink); }
+
+    p { margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+
+    strong { font-weight: 600; color: var(--ink); }
+    em { font-style: italic; color: var(--ink-mid); }
+
+    a { color: var(--red); text-decoration: underline; }
+    a:hover { color: var(--red-mid); }
+
+    /* ─── Layout helpers ───────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--col-max);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .container--wide { max-width: var(--col-wide); }
+    .container--text { max-width: var(--col-text); }
+
+    .section {
+      padding: 5rem 0;
+    }
+
+    .section--alt {
+      background: var(--sand-dark);
+    }
+
+    .section--dark {
+      background: var(--navy);
+      color: rgba(255,255,255,0.88);
+    }
+    .section--dark h2,
+    .section--dark h3 { color: #ffffff; }
+    .section--dark p { color: rgba(255,255,255,0.78); }
+
+    /* Two-column grid */
+    .col-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* Text left, chart right — wider chart */
+    .col-text-chart {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* Chart left, text right */
+    .col-chart-text {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* ─── Hero ─────────────────────────────────────────── */
+    #hero {
+      background: var(--navy);
+      color: #ffffff;
+      padding: 6rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 28px,
+        rgba(255,255,255,0.015) 28px,
+        rgba(255,255,255,0.015) 29px
+      );
+      pointer-events: none;
+    }
+
+    .hero-kicker {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--red-mid);
+      margin-bottom: 1.2rem;
+    }
+
+    #hero h1 {
+      color: #ffffff;
+      max-width: 700px;
+      margin-bottom: 1.5rem;
+    }
+
+    #hero h1 em {
+      font-style: italic;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .hero-lede {
+      font-size: 1.15rem;
+      max-width: 580px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.75;
+      margin-bottom: 3rem;
+    }
+
+    /* ─── Stat callouts ────────────────────────────────── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .stat-item {
+      padding: 1.4rem 1.5rem;
+      border-right: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+    }
+    .stat-item:last-child { border-right: none; }
+
+    .stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      line-height: 1;
+      color: var(--red-mid);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.4;
+    }
+
+    /* ─── Section label ────────────────────────────────── */
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.6rem;
+    }
+
+    .section--dark .section-label {
+      color: var(--red-mid);
+    }
+
+    /* ─── Divider ──────────────────────────────────────── */
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: var(--red);
+      margin: 1.2rem 0 1.8rem;
+    }
+
+    /* ─── Chart wrapper ────────────────────────────────── */
+    .chart-wrap {
+      width: 100%;
+    }
+
+    .chart-wrap .vega-embed {
+      width: 100% !important;
+    }
+
+    .chart-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ─── Pull quote / annotation block ───────────────── */
+    .pull-quote {
+      border-left: 3px solid var(--red);
+      padding-left: 1.2rem;
+      margin: 2rem 0;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      line-height: 1.5;
+      color: var(--navy);
+      font-style: italic;
+    }
+
+    .section--dark .pull-quote {
+      color: rgba(255,255,255,0.88);
+      border-left-color: var(--red-mid);
+    }
+
+    /* ─── Callout box ──────────────────────────────────── */
+    .callout {
+      background: var(--red-light);
+      border-left: 3px solid var(--red);
+      padding: 1.1rem 1.3rem;
+      border-radius: 0 4px 4px 0;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .callout strong { color: var(--red); }
+
+    /* ─── Full-width chart block ───────────────────────── */
+    .fullwidth-chart {
+      margin: 2.5rem 0 0;
+    }
+
+    /* ─── Note / caption ───────────────────────────────── */
+    .caption {
+      font-size: 0.8rem;
+      color: var(--ink-light);
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* ─── Footer ───────────────────────────────────────── */
+    #footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.5);
+      padding: 3rem 0;
+      font-size: 0.85rem;
+    }
+
+    #footer h3 {
+      color: rgba(255,255,255,0.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    #footer a { color: rgba(255,255,255,0.6); }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .footer-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin: 2rem 0 1.5rem;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── Vega tooltip override ────────────────────────── */
+    .vega-tooltip {
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 13px !important;
+      background: var(--navy) !important;
+      color: #fff !important;
+      border: none !important;
+      padding: 8px 12px !important;
+      border-radius: 4px !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    }
+
+    /* ─── Section spacer ───────────────────────────────── */
+    .spacer { height: 2rem; }
+
+    /* ─── Responsive ───────────────────────────────────── */
+    @media (max-width: 820px) {
+      h1 { font-size: 2.4rem; }
+      h2 { font-size: 1.6rem; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .col-2, .col-text-chart, .col-chart-text { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       HERO — Title, lede, 4 callout stats
+  ══════════════════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="container">
+      <p class="hero-kicker">FIT2179 · Data Visualisation 2</p>
+      <h1>Is Malaysia<br><em>getting safer</em>?</h1>
+      <p class="hero-lede">
+        From 2016 to 2023, recorded crime in Malaysia fell by more than half. 
+        But behind the national headline, some states remain far more dangerous 
+        than others — and wealth plays a surprising role.
+      </p>
+
+      <!-- 4 headline stats -->
+      <div class="stats-strip">
+        <div class="stat-item">
+          <div class="stat-number">53%</div>
+          <div class="stat-label">drop in total crimes<br>2016 → 2023</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">52,444</div>
+          <div class="stat-label">crimes recorded<br>in 2023</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">19.7%</div>
+          <div class="stat-label">absolute poverty rate<br>in Sabah (highest)</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">4.64%</div>
+          <div class="stat-label">unemployment<br>peak in 2021</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 1 — THE NATIONAL PICTURE
+       Charts: Area/line chart (Chart 10) + Dual-axis line (Chart 2)
+  ══════════════════════════════════════════════════════ -->
+  <section class="section" id="section-national">
+    <div class="container">
+      <p class="section-label">Section 01 — The National Picture</p>
+      <h2>A dramatic fall — but what drove it?</h2>
+      <div class="divider"></div>
+
+      <div class="col-text-chart">
+        <!-- Left: narrative text -->
+        <div>
+          <p>
+            Malaysia recorded <strong>112,355 crimes in 2016</strong>. By 2023, that number had 
+            fallen to just 52,444 — a reduction most Malaysians may not have noticed amid 
+            daily news headlines focused on individual incidents.
+          </p>
+          <p>
+            The sharpest decline came between 2019 and 2021, coinciding with the COVID-19 
+            pandemic and the Movement Control Order (MCO). With Malaysians largely confined 
+            to their homes, both property crime and violent crime fell sharply.
+          </p>
+          <div class="pull-quote">
+            "Crime fell fastest during the MCO — but it never fully rebounded after restrictions lifted."
+          </div>
+          <p>
+            Interestingly, unemployment <strong>rose</strong> during the same period — reaching 
+            4.64% in 2021. Classical economic theory would predict more crime during economic 
+            hardship, yet crime continued to fall. This challenges simple assumptions about 
+            the crime-poverty link.
+          </p>
+        </div>
+
+        <!-- Right: Chart 10 — Area chart with annotations -->
+        <div class="chart-wrap">
+          <p class="chart-title">Total recorded crimes, 2016–2023</p>
+          <div id="chart10"></div>
+          <p class="caption">Source: Royal Malaysia Police / DOSM via OpenDOSM (open.dosm.gov.my)</p>
+        </div>
+      </div>
+
+      <!-- Full width: Chart 2 — Dual axis line (crime + unemployment) -->
+      <div class="fullwidth-chart">
+        <p class="chart-title">Crime vs. unemployment rate — did they move together?</p>
+        <div id="chart2"></div>
+        <p class="caption">
+          Sources: OpenDOSM — Royal Malaysia Police crime data; 
+          World Bank Open Data — Unemployment, total (% of labour force), indicator SL.UEM.TOTL.ZS
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 2 — WHERE CRIME HAPPENS (dark bg)
+       Charts: Choropleth map (Chart 1) + Slope chart (Chart 3)
+  ══════════════════════════════════════════════════════ -->
+  <section class="section section--dark" id="section-map">
+    <div class="container">
+      <p class="section-label">Section 02 — Where Crime Happens</p>
+      <h2>Some states are far more dangerous than others</h2>
+      <div class="divider" style="background: var(--red-mid);"></div>
+
+      <p style="max-width: 620px; color: rgba(255,255,255,0.72); margin-bottom: 2.5rem;">
+        Looking at crime <em>rates per 100,000 people</em> — rather than raw counts — paints 
+        a fairer picture. W.P. Kuala Lumpur consistently records the highest rate, while 
+        rural states like Perlis and Terengganu remain relatively safe. Use the year 
+        selector to watch how each state's profile changed over time.
+      </p>
+
+      <!-- Full width: Chart 1 — Choropleth map with year slider -->
+      <div class="fullwidth-chart">
+        <p class="chart-title" style="color: rgba(255,255,255,0.5);">Crime rate per 100,000 population by state</p>
+        <div id="chart1"></div>
+        <p class="caption" style="color: rgba(255,255,255,0.4);">Source: OpenDOSM — Royal Malaysia Police</p>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- Chart 3 — Slope chart -->
+      <div class="col-chart-text">
+        <div class="chart-wrap">
+          <p class="chart-title" style="color: rgba(255,255,255,0.5);">Which states improved the most? (2016 → 2023)</p>
+          <div id="chart3"></div>
+          <p class="caption" style="color: rgba(255,255,255,0.4);">Source: OpenDOSM — Royal Malaysia Police</p>
+        </div>
+
+        <div>
+          <h3 style="color: #fff;">W.P. K.L. improved the most — but still leads nationally</h3>
+          <p>
+            Despite recording the steepest absolute fall in crime rate, 
+            W.P. Kuala Lumpur remains Malaysia's most crime-affected state. 
+            Its urban density, large transient population, and high number of 
+            commercial targets make it structurally different from other states.
+          </p>
+          <p>
+            At the other end, states like Perlis and Kelantan — which were already 
+            low in 2016 — saw smaller absolute improvements, reflecting less room 
+            to improve from an already-low baseline.
+          </p>
+          <div class="callout" style="background: rgba(192,57,43,0.2); border-left-color: var(--red-mid);">
+            <strong style="color: var(--red-mid);">Note on the rate:</strong>
+            <span style="color: rgba(255,255,255,0.7);">
+              Crime rate per 100,000 people accounts for population differences between 
+              states. A state with 5 million people recording 5,000 crimes is 
+              proportionally safer than one with 500,000 people recording the same count.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 3 — WHAT KIND OF CRIME?
+       Charts: Heatmap (Chart 5) + Lollipop (Chart 6) + Stacked bar (Chart 7)
+  ══════════════════════════════════════════════════════ -->
+  <section class="section section--alt" id="section-types">
+    <div class="container">
+      <p class="section-label">Section 03 — What Kind of Crime?</p>
+      <h2>Property crime dominates — but varies widely by state</h2>
+      <div class="divider"></div>
+
+      <!-- Two charts side by side -->
+      <div class="col-2">
+        <div class="chart-wrap">
+          <p class="chart-title">Crime type breakdown nationally (2022)</p>
+          <div id="chart6"></div>
+          <p class="caption">Source: OpenDOSM — Royal Malaysia Police</p>
+        </div>
+        <div class="chart-wrap">
+          <p class="chart-title">Violent vs. property crime by state (2022)</p>
+          <div id="chart7"></div>
+          <p class="caption">Source: OpenDOSM — Royal Malaysia Police</p>
+        </div>
+      </div>
+
+      <!-- Full width: Chart 5 — Heatmap -->
+      <div class="fullwidth-chart">
+        <p class="chart-title">Crime rate heatmap — state by crime type</p>
+        <div id="chart5"></div>
+        <p class="caption">Source: OpenDOSM — Royal Malaysia Police. Colour = rate per 100,000 people. Darker = higher rate.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 4 — ACROSS ALL STATES (small multiples)
+       Chart: Small multiples (Chart 4)
+  ══════════════════════════════════════════════════════ -->
+  <section class="section" id="section-multiples">
+    <div class="container">
+      <p class="section-label">Section 04 — All States at a Glance</p>
+      <h2>Every state tells a different story</h2>
+      <div class="divider"></div>
+
+      <div class="col-text-chart" style="margin-bottom: 2.5rem;">
+        <div>
+          <p>
+            While the national trend is clearly downward, the pace and pattern varies 
+            dramatically by state. Urban states like Selangor and W.P. Kuala Lumpur 
+            start from a high baseline and show steep absolute declines. Rural states 
+            like Perlis and Kelantan barely moved — because they were already low.
+          </p>
+          <p>
+            Sabah and Sarawak — Malaysia's two largest states geographically — show 
+            moderate but consistent downward trends, despite having the country's 
+            highest poverty rates.
+          </p>
+          <p>
+            Hover over any panel to highlight that state's trend line.
+          </p>
+        </div>
+        <div>
+          <div class="callout">
+            <strong>How to read this:</strong> Each small panel shows one state. The y-axis 
+            shows total crimes. All panels share the same y-scale, so you can directly 
+            compare magnitudes across states.
+          </div>
+        </div>
+      </div>
+
+      <div class="fullwidth-chart">
+        <p class="chart-title">Crime trends across all 14 states &amp; federal territories (2016–2023)</p>
+        <div id="chart4"></div>
+        <p class="caption">Source: OpenDOSM — Royal Malaysia Police</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 5 — DOES POVERTY DRIVE CRIME? (dark bg)
+       Charts: Scatter (Chart 8) + Ranked bar (Chart 9)
+  ══════════════════════════════════════════════════════ -->
+  <section class="section section--dark" id="section-poverty">
+    <div class="container">
+      <p class="section-label">Section 05 — Does Poverty Drive Crime?</p>
+      <h2>Wealthier states are not always safer</h2>
+      <div class="divider" style="background: var(--red-mid);"></div>
+
+      <p style="max-width: 620px; color: rgba(255,255,255,0.72); margin-bottom: 2.5rem;">
+        The relationship between wealth and crime in Malaysia is more nuanced than expected. 
+        W.P. Kuala Lumpur — Malaysia's wealthiest and most urban state — also has its 
+        highest crime rate. Meanwhile Kelantan, the lowest-income state, has a relatively 
+        moderate crime rate.
+      </p>
+
+      <!-- Full width: Chart 8 — Scatter with regression -->
+      <div class="fullwidth-chart">
+        <p class="chart-title" style="color: rgba(255,255,255,0.5);">Median household income vs. crime rate (2022)</p>
+        <div id="chart8"></div>
+        <p class="caption" style="color: rgba(255,255,255,0.4);">
+          Source: OpenDOSM socioeconomic data; Royal Malaysia Police crime data. 
+          Each dot represents one state. Regression line shows overall trend.
+        </p>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- Two charts side by side -->
+      <div class="col-2">
+        <div class="chart-wrap">
+          <p class="chart-title" style="color: rgba(255,255,255,0.5);">States ranked by median household income (2022)</p>
+          <div id="chart9"></div>
+          <p class="caption" style="color: rgba(255,255,255,0.4);">Source: DOSM Household Income Survey 2022</p>
+        </div>
+        <div>
+          <h3 style="color: #fff; margin-top: 1rem;">Why doesn't poverty predict crime here?</h3>
+          <p>
+            Urban density may matter more than poverty. Kuala Lumpur's high crime rate 
+            reflects its concentration of people, targets, and economic activity — not 
+            its wealth level. More people and more transactions mean more opportunities 
+            for both crime and detection.
+          </p>
+          <p>
+            Conversely, Sabah has Malaysia's highest absolute poverty rate (19.7%) 
+            but only a moderate crime rate — possibly reflecting strong community ties 
+            and lower urban density rather than economic safety.
+          </p>
+          <div class="pull-quote">
+            "Urban concentration, not just poverty, may be the missing variable."
+          </div>
+          <p>
+            This visualisation does not prove causation. It suggests that crime policy 
+            in Malaysia needs to look beyond income statistics and consider urbanisation, 
+            policing density, and reporting rates.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════ -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>About this visualisation</h3>
+          <p>
+            This visualisation was created as part of FIT2179 Data Visualisation 2 at 
+            Monash University Malaysia. It explores crime trends and socioeconomic 
+            inequality in Malaysia from 2016 to 2023 using publicly available data.
+          </p>
+          <p>
+            Generative AI tools (Claude by Anthropic) were used to assist in writing 
+            narrative text and generating Vega-Lite specifications. All data processing, 
+            design decisions, and final editorial choices were made by the author.
+          </p>
+        </div>
+        <div>
+          <h3>Data Sources</h3>
+          <p>
+            <a href="https://open.dosm.gov.my" target="_blank">OpenDOSM</a> — 
+            Royal Malaysia Police crime statistics, tabulated by the Department of 
+            Statistics Malaysia. Covers 2016–2023.
+          </p>
+          <p>
+            <a href="https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS" target="_blank">World Bank</a> — 
+            Unemployment, total (% of labour force), indicator SL.UEM.TOTL.ZS.
+          </p>
+          <p>
+            <a href="https://raw.githubusercontent.com/dosm-malaysia/data-open/main/datasets/geodata/administrative_1_state.geojson" target="_blank">DOSM GeoJSON</a> — 
+            Malaysia state boundaries.
+          </p>
+        </div>
+        <div>
+          <h3>Author</h3>
+          <p>
+            <!-- REPLACE with your name and student ID -->
+            [Your Name]<br />
+            Student ID: [Your ID]<br />
+            Monash University Malaysia<br />
+            FIT2179 — Semester 1, 2026
+          </p>
+          <p style="margin-top: 1rem;">
+            Published: May 2026
+          </p>
+        </div>
+      </div>
+
+      <hr class="footer-divider" />
+
+      <div class="footer-bottom">
+        <span>FIT2179 Data Visualisation 2 — Monash University Malaysia, 2026</span>
+        <span>Data: OpenDOSM · World Bank</span>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       VEGA-LITE CHART SPECS
+       Each chart is embedded with vegaEmbed('#chartN', spec, options)
+       Replace the placeholder spec objects below with the real specs
+       as you build each chart one by one.
+  ══════════════════════════════════════════════════════ -->
+  <script>
+
+    /* ── Shared Vega-Embed options ──────────────────────── */
+    const embedOpts = {
+      actions: false,
+      renderer: "svg",
+      tooltip: { theme: "dark" }
+    };
+
+    /* ── Shared colour config for all charts ────────────── */
+    const sharedConfig = {
+      font: "DM Sans",
+      title: {
+        font: "DM Serif Display",
+        color: "#1a2332",
+        fontSize: 14
+      },
+      axis: {
+        labelFont: "DM Sans",
+        titleFont: "DM Sans",
+        labelFontSize: 11,
+        titleFontSize: 12,
+        labelColor: "#7a7773",
+        titleColor: "#4a4845",
+        gridColor: "#ede8e1",
+        domainColor: "#ede8e1",
+        tickColor: "#ede8e1"
+      },
+      legend: {
+        labelFont: "DM Sans",
+        titleFont: "DM Sans",
+        labelFontSize: 11,
+        titleFontSize: 11,
+        labelColor: "#4a4845",
+        titleColor: "#4a4845"
+      },
+      view: { stroke: "transparent" },
+      background: "transparent"
+    };
+
+    /* ════════════════════════════════════════════════════
+       CHART 10 — Annotated Area Chart (crime trend)
+    ════════════════════════════════════════════════════ */
+    const spec10 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 260,
+      "data": { "url": "data/crime_malaysia_trend.json" },
+      "layer": [
+        {
+          "mark": { "type": "area", "color": "#c0392b", "opacity": 0.15 },
+          "encoding": {
+            "x": { "field": "year", "type": "ordinal", "axis": { "title": null, "labelAngle": 0 } },
+            "y": { "field": "total_crimes", "type": "quantitative", "axis": { "title": "Total crimes", "format": ",.0f" } }
+          }
+        },
+        {
+          "mark": { "type": "line", "color": "#c0392b", "strokeWidth": 2.5, "point": { "filled": true, "fill": "#c0392b", "size": 50 } },
+          "encoding": {
+            "x": { "field": "year", "type": "ordinal" },
+            "y": { "field": "total_crimes", "type": "quantitative" },
+            "tooltip": [
+              { "field": "year", "title": "Year" },
+              { "field": "total_crimes", "title": "Total crimes", "format": ",.0f" }
+            ]
+          }
+        },
+        {
+          "data": {
+            "values": [
+              { "year": "2020", "label": "MCO begins\n(Mar 2020)" },
+              { "year": "2022", "label": "Restrictions\nlifted" }
+            ]
+          },
+          "mark": { "type": "rule", "color": "#4a4845", "strokeDash": [4, 3], "opacity": 0.5 },
+          "encoding": { "x": { "field": "year", "type": "ordinal" } }
+        },
+        {
+          "data": {
+            "values": [
+              { "year": "2020", "y": 90000, "label": "MCO begins" },
+              { "year": "2022", "y": 90000, "label": "Restrictions lifted" }
+            ]
+          },
+          "mark": { "type": "text", "fontSize": 10, "color": "#7a7773", "dy": -6, "angle": 0 },
+          "encoding": {
+            "x": { "field": "year", "type": "ordinal" },
+            "y": { "field": "y", "type": "quantitative" },
+            "text": { "field": "label" }
+          }
+        }
+      ]
+    };
+    vegaEmbed('#chart10', spec10, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 2 — Dual-axis line: crime + unemployment
+    ════════════════════════════════════════════════════ */
+    const spec2 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 260,
+      "data": { "url": "data/crime_malaysia_trend.json" },
+      "resolve": { "scale": { "y": "independent" } },
+      "layer": [
+        {
+          "mark": { "type": "bar", "color": "#c0392b", "opacity": 0.75 },
+          "encoding": {
+            "x": { "field": "year", "type": "ordinal", "axis": { "title": null, "labelAngle": 0 } },
+            "y": {
+              "field": "total_crimes",
+              "type": "quantitative",
+              "axis": { "title": "Total crimes", "format": ",.0f", "titleColor": "#c0392b", "labelColor": "#c0392b" }
+            },
+            "tooltip": [
+              { "field": "year", "title": "Year" },
+              { "field": "total_crimes", "title": "Total crimes", "format": ",.0f" },
+              { "field": "unemployment_rate", "title": "Unemployment %", "format": ".2f" }
+            ]
+          }
+        },
+        {
+          "mark": { "type": "line", "color": "#1a2332", "strokeWidth": 2, "strokeDash": [5, 3], "point": { "filled": true, "fill": "#1a2332", "size": 40 } },
+          "encoding": {
+            "x": { "field": "year", "type": "ordinal" },
+            "y": {
+              "field": "unemployment_rate",
+              "type": "quantitative",
+              "axis": { "title": "Unemployment rate (%)", "titleColor": "#1a2332", "labelColor": "#1a2332" }
+            }
+          }
+        }
+      ]
+    };
+    vegaEmbed('#chart2', spec2, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 1 — Choropleth map (year slider)
+       PLACEHOLDER — replace with full spec in "Build Chart 1"
+    ════════════════════════════════════════════════════ */
+    const spec1 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 400,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": {
+        "text": { "value": "⟳  Map loading — replace spec1 with full choropleth spec" }
+      }
+    };
+    vegaEmbed('#chart1', spec1, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 3 — Slope chart: state crime rate 2016 → 2023
+       PLACEHOLDER
+    ════════════════════════════════════════════════════ */
+    const spec3 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 400,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": { "text": { "value": "⟳  Replace spec3 with slope chart spec" } }
+    };
+    vegaEmbed('#chart3', spec3, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 5 — Heatmap: state × crime type
+       PLACEHOLDER
+    ════════════════════════════════════════════════════ */
+    const spec5 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 360,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": { "text": { "value": "⟳  Replace spec5 with heatmap spec" } }
+    };
+    vegaEmbed('#chart5', spec5, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 6 — Lollipop: crime types nationally (2022)
+       PLACEHOLDER
+    ════════════════════════════════════════════════════ */
+    const spec6 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 360,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": { "text": { "value": "⟳  Replace spec6 with lollipop spec" } }
+    };
+    vegaEmbed('#chart6', spec6, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 7 — Stacked bar: violent vs property by state (2022)
+       PLACEHOLDER
+    ════════════════════════════════════════════════════ */
+    const spec7 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 380,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": { "text": { "value": "⟳  Replace spec7 with stacked bar spec" } }
+    };
+    vegaEmbed('#chart7', spec7, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 4 — Small multiples: all states (2016–2023)
+       PLACEHOLDER
+    ════════════════════════════════════════════════════ */
+    const spec4 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 100,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": { "text": { "value": "⟳  Replace spec4 with small multiples spec" } }
+    };
+    vegaEmbed('#chart4', spec4, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 8 — Scatter: income vs crime rate (2022)
+       PLACEHOLDER
+    ════════════════════════════════════════════════════ */
+    const spec8 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 380,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": { "text": { "value": "⟳  Replace spec8 with scatter spec" } }
+    };
+    vegaEmbed('#chart8', spec8, embedOpts);
+
+
+    /* ════════════════════════════════════════════════════
+       CHART 9 — Ranked lollipop: income + poverty by state
+       PLACEHOLDER
+    ════════════════════════════════════════════════════ */
+    const spec9 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "config": sharedConfig,
+      "width": "container",
+      "height": 380,
+      "data": { "values": [{ "placeholder": true }] },
+      "mark": "text",
+      "encoding": { "text": { "value": "⟳  Replace spec9 with ranked lollipop spec" } }
+    };
+    vegaEmbed('#chart9', spec9, embedOpts);
+
+  </script>
+
+</body>
+</html>
