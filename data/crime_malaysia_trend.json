@@ -1,0 +1,10 @@
+[
+  {"year": 2016, "violent_crimes": 22327, "property_crimes": 90028, "total_crimes": 112355, "unemployment_rate": 3.44, "annotation": null},
+  {"year": 2017, "violent_crimes": 21366, "property_crimes": 77804, "total_crimes": 99170, "unemployment_rate": 3.41, "annotation": null},
+  {"year": 2018, "violent_crimes": 16902, "property_crimes": 71760, "total_crimes": 88662, "unemployment_rate": 3.3, "annotation": null},
+  {"year": 2019, "violent_crimes": 16489, "property_crimes": 66967, "total_crimes": 83456, "unemployment_rate": 3.33, "annotation": null},
+  {"year": 2020, "violent_crimes": 13279, "property_crimes": 52344, "total_crimes": 65623, "unemployment_rate": 4.54, "annotation": "MCO begins"},
+  {"year": 2021, "violent_crimes": 11495, "property_crimes": 41479, "total_crimes": 52974, "unemployment_rate": 4.64, "annotation": null},
+  {"year": 2022, "violent_crimes": 10348, "property_crimes": 40465, "total_crimes": 50813, "unemployment_rate": 3.93, "annotation": "Restrictions lifted"},
+  {"year": 2023, "violent_crimes": 10453, "property_crimes": 41991, "total_crimes": 52444, "unemployment_rate": 3.858, "annotation": null}
+]
