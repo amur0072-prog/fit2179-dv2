@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,9 +62,55 @@
     h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 0.35rem; }
     h3 { font-size: 1.15rem; margin-bottom: 0.35rem; color: var(--ink); }
 
-    p { margin-bottom: 1rem; max-width: var(--col-text); }
+    p { margin-bottom: 1rem; max-width: var(--col-text); text-align: justify; hyphens: none; -webkit-hyphens: none; }
     p:last-child { margin-bottom: 0; }
     p.wide { max-width: none; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    #site-footer {
+      background: #f8f6f2;
+      border-top: 1px solid #e0dbd3;
+      padding: 3rem 0 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .footer-col h4 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.8rem;
+    }
+    .footer-col p, .footer-col li {
+      font-size: 0.82rem;
+      color: var(--ink-mid);
+      line-height: 1.65;
+      margin-bottom: 0.3rem;
+      max-width: none;
+      text-align: left;
+    }
+    .footer-col ul { list-style: none; padding: 0; }
+    .footer-col a { color: var(--ink-mid); text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.12); }
+    .footer-col a:hover { color: var(--red); border-color: var(--red); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1.2rem;
+      border-top: 1px solid #e0dbd3;
+      font-size: 0.77rem;
+      color: var(--ink-light);
+    }
+    @media (max-width: 640px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 1.8rem; }
+      .footer-bottom { flex-direction: column; gap: 0.4rem; }
+    }
 
     strong { font-weight: 600; color: var(--ink); }
     em { font-style: italic; color: var(--ink-mid); }
@@ -205,6 +252,10 @@
       color: var(--ink-light);
       margin-top: 0.45rem;
       line-height: 1.5;
+      text-align: justify;
+      hyphens: none;
+      -webkit-hyphens: none;
+      max-width: none;
     }
 
     /* Full-width chart block with top breathing room */
@@ -313,13 +364,21 @@
     /* ── Tooltip ──────────────────────────────────────── */
     .vega-tooltip {
       font-family: 'DM Sans', sans-serif !important;
-      font-size: 13px !important;
-      background: var(--navy) !important;
-      color: #fff !important;
-      border: none !important;
-      padding: 8px 12px !important;
-      border-radius: 4px !important;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+      font-size: 12.5px !important;
+      background: rgba(255,255,255,0.97) !important;
+      color: var(--ink) !important;
+      border: 1px solid rgba(0,0,0,0.10) !important;
+      padding: 7px 11px !important;
+      border-radius: 5px !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.10) !important;
+    }
+    .vega-tooltip td.key {
+      color: var(--ink-light) !important;
+      font-weight: 500 !important;
+    }
+    .vega-tooltip td.value {
+      color: var(--ink) !important;
+      font-weight: 600 !important;
     }
 
     /* ── Responsive ───────────────────────────────────── */
@@ -327,8 +386,6 @@
       :root { --section-pad: 3.5rem; --block-gap: 2rem; }
       .stats-strip { grid-template-columns: repeat(2, 1fr); }
       .col-2, .col-text-chart, .col-chart-text { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; gap: 1.8rem; }
-      .footer-bottom { flex-direction: column; gap: 0.4rem; }
     }
   </style>
 </head>
@@ -491,20 +548,23 @@
       <div class="chart-wrap">
         <p class="chart-title">Crime rate change per state — 2016 vs 2023</p>
         <div id="chart-dumbbell"></div>
-        <p class="caption">Each dot pair shows one state. Left dot = 2016, right dot = 2023.</p>
+        <p class="caption">Each pair shows a state's journey from 2016 (dark) to 2023 (red). The longer the connecting line, the more dramatic the improvement. KL's gap is the widest — it fell the furthest, yet still leads the nation.</p>
       </div>
       <div>
-        <h3>W.P. K.L. improved the most — but still leads nationally</h3>
+        <h3>W.P. Kuala Lumpur improved the most — but still leads nationally</h3>
         <p>
-          Despite recording the steepest absolute fall in crime rate,
-          W.P. Kuala Lumpur remains Malaysia's most crime-affected state.
-          Its urban density, large transient population, and high number of
-          commercial targets make it structurally different from other states.
+          Despite the steepest absolute fall in crime rate,
+          KL remains Malaysia's most crime-affected state. Its urban
+          density, large transient population, and concentration of commercial
+          activity create structural conditions that generate more criminal
+          opportunity than anywhere else. The MCO suppressed crime
+          everywhere but could not restructure KL's underlying geography of risk.
         </p>
         <p>
-          States like Perlis and Kelantan — already low in 2016 — saw smaller
-          absolute improvements, reflecting less room to improve from an
-          already-low baseline.
+          States like Perlis and Kelantan saw smaller gains
+          simply because they had less room to fall.
+          Lower density and community cohesion were doing
+          the work long before the trend began.
         </p>
         <div class="callout">
           <strong>Note on the rate:</strong> Crime rate per 100,000 people
@@ -559,8 +619,7 @@
       <p class="chart-title">Crime rate heatmap — state by crime type (avg. 2016–2023)</p>
       <div id="chart5"></div>
       <p class="caption">
-        Values shown as average annual rate per 100,000 people.
-        Darker = higher rate.
+        Values shown as average annual rate per 100,000 people. Darker = higher rate. Notice how motorcycle theft (leftmost column) dominates KL and Selangor — two states where motorcycles are both the primary transport and the primary target. Rural states like Perlis show almost no vehicle theft but have comparable break-in rates.
       </p>
     </div>
   </div>
@@ -589,7 +648,7 @@
       <p class="chart-title">Median household income vs. crime rate per state (2022)</p>
       <div id="chart8"></div>
       <p class="caption">
-        Each dot = one state. Regression line shows overall trend.
+        Each dot = one state. Regression line shows the overall trend. Two outliers shatter the poverty-crime assumption: KL (top-right) is the wealthiest yet most crime-ridden; Sabah (bottom-left) is the poorest yet sits well below the trend line — community cohesion may be doing what policing cannot.
       </p>
     </div>
 
@@ -600,16 +659,19 @@
       <div class="chart-wrap">
         <p class="chart-title">State crime rate vs. national average (2022)</p>
         <div id="chart9"></div>
-        <p class="caption">
-          Bar = state crime rate per 100k. Line = national average.
-        </p>
+      <p class="caption">
+        Bar = state crime rate per 100k. Vertical line = national average (151.2). Red bars sit above the national average — but notice that all above-average states are also the most urbanised, suggesting density matters more than wealth in predicting crime.
+      </p>
       </div>
       <div>
         <h3>Why doesn't poverty predict crime here?</h3>
         <p>
-          Urban density may matter more than poverty. Kuala Lumpur's high crime rate
-          reflects its concentration of people, targets, and economic activity —
-          not its wealth level.
+          Urban density may matter more than poverty.
+          Kuala Lumpur's high crime rate reflects its
+          concentration of people, targets, and economic activity —
+          not its wealth level. States with lower density
+          record far fewer crimes despite lower incomes, suggesting
+          opportunity drives criminal behaviour more than deprivation alone.
         </p>
         <p>
           Conversely, Sabah has Malaysia's highest absolute poverty rate (19.7%)
@@ -628,6 +690,9 @@
     <div class="fullwidth-chart">
       <p class="chart-title">Median household income &amp; absolute poverty rate by state (2022)</p>
       <div id="chart11"></div>
+      <p class="caption">
+        States ranked by median income (bars). Red dots show absolute poverty rate (top axis). Notice the disconnect: Sabah ranks last on income and highest on poverty — yet its crime rate is moderate. High income doesn't automatically mean low crime, and low income doesn't guarantee high crime.
+      </p>
     </div>
   </div>
 </section>
@@ -657,9 +722,7 @@
           dominant concern.
         </p>
         <div class="callout">
-          <strong>How to read this:</strong> Each axis represents one crime type.
-          The further the line extends from the centre, the higher the crime rate
-          per 100,000 people for that category (averaged 2016–2023).
+          <strong>How to read this:</strong> Each slice represents one crime type, with all 12 given equal angular space. bar length shows its rate per 100,000 people. The brightest bars in any state reveal its top 3 dominant crime fingerprint.
         </div>
       </div>
 
@@ -667,12 +730,9 @@
       <div class="chart-wrap">
         <p class="chart-title">Crime profile by state — select a state to explore</p>
         <div id="chart12"></div>
-        <p class="caption">Avg. annual rate per 100,000 people, 2016–2023.</p>
+        <p class="caption">Avg. rate per 100,000 people, 2022. Bars extend outward — longer = more prevalent. Brightest sectors reveal each state's crime fingerprint.</p>
         <p class="caption" style="margin-top:0.6rem;">
-        Theft, not violence, defines KL's crime profile. Motorcycle and vehicle theft
-        together account for the majority of W.P. Kuala Lumpur's total rate — yet public
-        perception fixates on robbery and assault. Switch states to see how this shifts 
-        dramatically in lower-income rural states.
+          Theft dominates urban states; in W.P. Kuala Lumpur, motorcycle and vehicle theft together dwarf all violent crime combined. Switch to Sabah or Kelantan — the wheel spins shorter but shapes differently, with break-ins gaining relative prominence. No two states share the same silhouette. What looks like a crime problem is really many different problems wearing the same name. A single national policy cannot fix what fourteen different wheels are telling us.
         </p>
       </div>
     </div>
@@ -693,8 +753,23 @@
   const embedOpts = {
     actions: false,
     renderer: "svg",
-    tooltip: { theme: "dark" }
+    tooltip: { theme: "light" }
   };
+
+  /* ── Consistent 14-state color palette ──────────────
+     Used across ALL charts that encode state as color.
+     Order matches Vega-Lite domain arrays below.
+  ──────────────────────────────────────────────────── */
+  const STATE_DOMAIN = [
+    "Johor","Kedah","Kelantan","Melaka","Negeri Sembilan",
+    "Pahang","Perak","Perlis","Pulau Pinang","Sabah",
+    "Sarawak","Selangor","Terengganu","W.P. Kuala Lumpur"
+  ];
+  const STATE_RANGE = [
+    "#4e79a7","#f28e2b","#59a14f","#e15759","#76b7b2",
+    "#edc948","#b07aa1","#ff9da7","#9c755f","#bab0ac",
+    "#17becf","#d45087","#7570b3","#c0392b"
+  ];
 
   const sharedConfig = {
     font: "DM Sans",
@@ -737,14 +812,14 @@
     "data": { "url": "data/crime_malaysia_trend.json" },
     "layer": [
       {
-        "mark": { "type": "area", "color": "#c0392b", "opacity": 0.15 },
+        "mark": { "type": "area", "color": "#1a2332", "opacity": 0.12 },
         "encoding": {
           "x": { "field": "year", "type": "ordinal", "axis": { "title": "Year", "labelAngle": 0 } },
           "y": { "field": "total_crimes", "type": "quantitative", "axis": { "title": "Total crimes", "format": ",.0f", "titlePadding": 14 } }
         }
       },
       {
-        "mark": { "type": "line", "color": "#c0392b", "strokeWidth": 2.5, "point": { "filled": true, "fill": "#c0392b", "size": 50 } },
+        "mark": { "type": "line", "color": "#1a2332", "strokeWidth": 2.5, "point": { "filled": true, "fill": "#1a2332", "size": 50 } },
         "encoding": {
           "x": { "field": "year", "type": "ordinal" },
           "y": { "field": "total_crimes", "type": "quantitative" },
@@ -755,19 +830,51 @@
         }
       },
       {
-        "transform": [{ "filter": "datum.annotation != null" }],
-        "mark": { "type": "rule", "color": "#4a4845", "strokeDash": [4, 3], "opacity": 0.5 },
-        "encoding": { "x": { "field": "year", "type": "ordinal" } }
-      },
-      {
-        "transform": [{ "filter": "datum.annotation != null" }],
-        "mark": { "type": "text", "fontSize": 10, "color": "#7a7773", "dx": -8, "align": "right" },
-        "encoding": {
-          "x": { "field": "year", "type": "ordinal" },
-          "y": { "value": 30 },
-          "text": { "field": "annotation" }
-        }
+      "data": {"values": [{"year": 2020}]},
+      "mark": {"type": "rule", "color": "#1a2332", "strokeDash": [4, 3], "opacity": 0.4},
+      "encoding": {"x": {"field": "year", "type": "ordinal"}}
+    },
+    {
+      "data": {"values": [{"year": 2022}]},
+      "mark": {"type": "rule", "color": "#1a2332", "strokeDash": [4, 3], "opacity": 0.4},
+      "encoding": {"x": {"field": "year", "type": "ordinal"}}
+    },
+    {
+      "data": {"values": [{"year": 2020}]},
+      "mark": {"type": "text", "fontSize": 9.5, "color": "#4a4845", "align": "left", "fontStyle": "italic", "font": "DM Sans", "dx": 6, "dy": 10},
+      "encoding": {
+        "x": {"field": "year", "type": "ordinal"},
+        "y": {"value": 0},
+        "text": {"value": "MCO begins"}
       }
+    },
+    {
+      "data": {"values": [{"year": 2022}]},
+      "mark": {"type": "text", "fontSize": 9.5, "color": "#4a4845", "align": "left", "fontStyle": "italic", "font": "DM Sans", "dx": 6, "dy": 10},
+      "encoding": {
+        "x": {"field": "year", "type": "ordinal"},
+        "y": {"value": 0},
+        "text": {"value": "Restrictions lifted"}
+      }
+    },
+    {
+      "data": {"values": [{"year": 2016, "y": 112355}]},
+      "mark": {"type": "text", "fontSize": 9.5, "font": "DM Sans", "fontWeight": 600, "color": "#4a4845", "align": "left", "dx": 8, "dy": -12},
+      "encoding": {
+        "x": {"field": "year", "type": "ordinal"},
+        "y": {"field": "y", "type": "quantitative"},
+        "text": {"value": "112,355 — baseline"}
+      }
+    },
+    {
+      "data": {"values": [{"year": 2021, "y": 47067}]},
+      "mark": {"type": "text", "fontSize": 9.5, "font": "DM Sans", "fontWeight": 600, "color": "#1a2332", "align": "left", "dx": -25, "dy": 10, "lineBreak": "\n"},
+      "encoding": {
+        "x": {"field": "year", "type": "ordinal"},
+        "y": {"field": "y", "type": "quantitative"},
+        "text": {"value": "47,067 — all-time low.\nMCO eliminated the opportunity\nto commit crime, not just motive."}
+      }
+    }
     ]
   };
   vegaEmbed('#chart10', spec10, embedOpts);
@@ -791,11 +898,11 @@
           "y": {
             "field": "total_crimes",
             "type": "quantitative",
-            "axis": { "title": "Total crimes", "format": ",.0f", "titleColor": "#800080", "labelColor": "#800080" }
+            "axis": { "title": "Total crimes", "format": ",.0f", "titleColor": "#1a2332", "labelColor": "#1a2332" }
           },
           "color": {
             "datum": "Total crimes",
-            "scale": { "range": ["#800080"] },
+            "scale": { "range": ["#1a2332"] },
             "legend": { "title": null, "symbolType": "stroke", "symbolSize": 120 }
           },
           "tooltip": [
@@ -812,11 +919,11 @@
           "y": {
             "field": "unemployment_rate",
             "type": "quantitative",
-            "axis": { "title": "Unemployment rate (%)", "titleColor": "#1a2332", "labelColor": "#1a2332" }
+            "axis": { "title": "Unemployment rate (%)", "titleColor": "#b45309", "labelColor": "#b45309" }
           },
           "color": {
             "datum": "Unemployment rate",
-            "scale": { "range": ["#1a2332"] },
+            "scale": { "range": ["#b45309"] },
             "legend": { "title": null, "symbolType": "stroke", "symbolSize": 120 }
           },
           "tooltip": [
@@ -825,6 +932,20 @@
             { "field": "unemployment_rate", "title": "Unemployment %", "format": ".2f" }
           ]
         }
+      },
+      {
+        "data": {"values": [{"year": 2021, "label": "Unemployment peaks at 4.64%\nyet crime hits its all-time low —\nthe MCO removed opportunity,\nnot just motive"}]},
+        "mark": {"type": "text", "align": "center", "dy": 10,"dx": 80, "fontSize": 9.5, "fontStyle": "italic", "font": "DM Sans", "color": "#4a4845", "lineBreak": "\n"},
+        "encoding": {
+          "x": {"field": "year", "type": "ordinal"},
+          "y": {"value": 80},
+          "text": {"field": "label"}
+        }
+      },
+      {
+        "data": {"values": [{"year": 2021}]},
+        "mark": {"type": "rule", "strokeDash": [3,3], "color": "#1a2332", "opacity": 0.4, "strokeWidth": 1.5},
+        "encoding": {"x": {"field": "year", "type": "ordinal"}}
       }
     ]
   };
@@ -924,7 +1045,6 @@
     "config": sharedConfig,
     "width": 750,
     "height": 420,
-    "padding": {"left": 10, "right": 10, "top": 10, "bottom": 10},
     "data": {"url": "data/crime_state_rank.json"},
     "layer": [
         {
@@ -952,7 +1072,7 @@
                 "domain": false
             }
             },
-            "color": { "field": "state", "type": "nominal", "scale": {"scheme": "tableau20"}, "legend": null },
+            "color": { "field": "state", "type": "nominal", "scale": {"domain": STATE_DOMAIN, "range": STATE_RANGE}, "legend": null },
             "detail": {"field": "state"},
             "tooltip": [
             {"field": "state", "title": "State"},
@@ -967,7 +1087,7 @@
         "encoding": {
             "x": {"field": "year", "type": "ordinal"},
             "y": { "field": "rank", "type": "quantitative", "sort": "descending", "scale": {"domain": [0.5, 14.5]} },
-            "color": { "field": "state", "type": "nominal", "scale": {"scheme": "tableau20"}, "legend": null },
+            "color": { "field": "state", "type": "nominal", "scale": {"domain": STATE_DOMAIN, "range": STATE_RANGE}, "legend": null },
             "tooltip": [
             {"field": "state", "title": "State"},
             {"field": "year", "title": "Year"},
@@ -983,7 +1103,7 @@
             "x": {"field": "year", "type": "ordinal"},
             "y": { "field": "rank", "type": "quantitative", "sort": "descending", "scale": {"domain": [0.5, 14.5]} },
             "text": {"field": "state"},
-            "color": { "field": "state", "type": "nominal", "scale": {"scheme": "tableau20"} }
+            "color": { "field": "state", "type": "nominal", "scale": {"domain": STATE_DOMAIN, "range": STATE_RANGE} }
         }
         },
         {
@@ -993,7 +1113,16 @@
             "x": {"field": "year", "type": "ordinal"},
             "y": { "field": "rank", "type": "quantitative", "sort": "descending", "scale": {"domain": [0.5, 14.5]} },
             "text": {"field": "state"},
-            "color": { "field": "state", "type": "nominal", "scale": {"scheme": "tableau20"} }
+            "color": { "field": "state", "type": "nominal", "scale": {"domain": STATE_DOMAIN, "range": STATE_RANGE} }
+        }
+        },
+        {
+        "data": {"values": [{"year": 2020, "label": "MCO 2020: public movement banned\n→ opportunity removed, crime collapses"}]},
+        "mark": { "type": "text", "align": "center", "dy": -18, "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#4a4845" },
+        "encoding": {
+            "x": {"field": "year", "type": "ordinal"},
+            "y": {"value": 0},
+            "text": {"field": "label"}
         }
         }
     ]
@@ -1057,20 +1186,68 @@ vegaEmbed('#chart-dumbbell', specDumbbell, embedOpts);
   const spec3 = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "config": sharedConfig,
-    "width": "700", "height": 400,
+    "width": 700, "height": 400,
     "data": { "url": "data/crime_state_year.json" },
-    "mark": { "type": "line", "strokeWidth": 2, "point": { "filled": true, "size": 40 } },
+    "layer": [
+      {
+        "mark": { "type": "line", "strokeWidth": 2, "point": { "filled": true, "size": 40 } },
+        "encoding": {
+          "x": { "field": "year", "type": "ordinal", "axis": { "title": "Year", "labelAngle": 0 } },
+          "y": { "field": "crime_rate_per_100k", "type": "quantitative", "axis": { "title": "Crime rate per 100,000", "grid": true, "gridColor": "#ede8e1", "gridDash": [2,2] } },
+          "color": { "field": "state", "type": "nominal", "scale": {"domain": STATE_DOMAIN, "range": STATE_RANGE}, "legend": { "title": "State", "orient": "right", "columns": 1 } },
+          "opacity": {
+            "condition": {"test": "datum.state == 'W.P. Kuala Lumpur'", "value": 1},
+            "value": 0.45
+          },
+          "strokeWidth": {
+            "condition": {"test": "datum.state == 'W.P. Kuala Lumpur'", "value": 3},
+            "value": 1.5
+          },
+          "tooltip": [
+            { "field": "state", "title": "State" },
+            { "field": "year", "title": "Year" },
+            { "field": "crime_rate_per_100k", "title": "Crime rate per 100k", "format": ".1f" }
+          ]
+        }
+      },
+      {
+    "data": {"values": [
+      {"year": 2016, "y": 860, "label": "KL starts 60% above all other states —\nurban density drives targets"}
+    ]},
+    "mark": {"type": "text", "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#4a4845", "lineBreak": "\n", "dx": 30, "dy": 10, "align": "left"},
     "encoding": {
-      "x": { "field": "year", "type": "ordinal", "axis": { "title": "Year", "labelAngle": 0 } },
-      "y": { "field": "crime_rate_per_100k", "type": "quantitative", "axis": { "title": "Crime rate per 100,000" } },
-      "color": { "field": "state", "type": "nominal", "scale": { "scheme": "tableau20" }, "legend": { "title": "State" } },
-      "tooltip": [
-        { "field": "state", "title": "State" },
-        { "field": "year", "title": "Year" },
-        { "field": "crime_rate_per_100k", "title": "Crime rate per 100k", "format": ".1f" }
-      ]
+      "x": {"field": "year", "type": "ordinal"},
+      "y": {"field": "y", "type": "quantitative"},
+      "text": {"field": "label"}
     }
-  };
+},
+{
+  "data": {"values": [
+    {"year": 2023, "y": 430, "label": "KL still highest, but gap narrows —\nimproved policing or pandemic spillover?"}
+  ]},
+  "mark": {"type": "text", "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#4a4845", "lineBreak": "\n", "dx": 15, "dy": 30, "align": "right"},
+  "encoding": {
+    "x": {"field": "year", "type": "ordinal"},
+    "y": {"field": "y", "type": "quantitative"},
+    "text": {"field": "label"}
+  }
+},
+{
+  "data": {"values": [{"year": 2020}]},
+  "mark": {"type": "rule", "color": "#4a4845", "strokeDash": [4, 3], "opacity": 0.3, "strokeWidth": 1.5},
+  "encoding": {"x": {"field": "year", "type": "ordinal"}}
+},
+{
+  "data": {"values": [{"year": 2020}]},
+  "mark": {"type": "text", "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#4a4845", "align": "left", "dx": 6, "dy": 10, "lineBreak": "\n"},
+  "encoding": {
+    "x": {"field": "year", "type": "ordinal"},
+    "y": {"value": 0},
+    "text": {"value": "COVID-19 & MCO — movement banned,\nopportunity to commit crime collapses"}
+  }
+}
+]
+};
   vegaEmbed('#chart3', spec3, embedOpts);
 
 
@@ -1170,7 +1347,7 @@ vegaEmbed('#chart-dumbbell', specDumbbell, embedOpts);
           },
           "color": {
             "field": "category", "type": "nominal",
-            "scale": {"domain": ["assault","property"], "range": ["#D55E00","#56B4E9"]},
+            "scale": {"domain": ["assault","property"], "range": ["#CC79A7","#009E73"]},
             "legend": {
               "title": "Crime Category", "orient": "bottom-right",
               "labelFont": "DM Sans", "titleFont": "DM Sans",
@@ -1274,7 +1451,7 @@ vegaEmbed('#chart-dumbbell', specDumbbell, embedOpts);
         "encoding": {
             "x": { "field": "income_median", "type": "quantitative", "axis": { "title": "Median household income (RM)", "format": ",.0f" } },
             "y": { "field": "crime_rate_per_100k", "type": "quantitative", "axis": { "title": "Crime rate per 100,000" } },
-            "color": { "value": "#d4a017" },
+            "color": { "value": "#5c7a3e" },
             "tooltip": [
             { "field": "state", "title": "State" },
             { "field": "income_median", "title": "Median income (RM)", "format": ",.0f" },
@@ -1290,7 +1467,7 @@ vegaEmbed('#chart-dumbbell', specDumbbell, embedOpts);
         "encoding": {
             "x": { "field": "income_median", "type": "quantitative" },
             "y": { "field": "crime_rate_per_100k", "type": "quantitative" },
-            "text": { "value": "Richest state — yet\nhighest crime rate" }
+            "text": { "value": "KL: richest — yet most crime-ridden.\nUrban density multiplies targets,\nnot just poverty." }
         }
         },
         {
@@ -1301,6 +1478,7 @@ vegaEmbed('#chart-dumbbell', specDumbbell, embedOpts);
         "encoding": {
             "x": { "field": "income_median", "type": "quantitative" },
             "y": { "field": "crime_rate_per_100k", "type": "quantitative" },
+            "text": { "value": "Kelantan: lowest income,\nyet moderate crime —\ncommunity ties may offset poverty" }
         }
         }
     ]
@@ -1343,7 +1521,7 @@ vegaEmbed('#chart8', spec8, embedOpts);
             "x": { "field": "crime_rate", "type": "quantitative" },
             "color": {
             "field": "above_avg", "type": "nominal",
-            "scale": { "domain": [true, false], "range": ["#c0392b", "#d4a017"] },
+            "scale": { "domain": [true, false], "range": ["#c0392b", "#4a9e8e"] },
             "legend": {
                 "title": null,
                 "orient": "top",
@@ -1366,7 +1544,7 @@ vegaEmbed('#chart8', spec8, embedOpts);
             "text": { "field": "diff_label" },
             "color": {
             "condition": { "test": "datum.above_avg == true", "value": "#c0392b" },
-            "value": "#d4a017"
+            "value": "#4a9e8e"
             }
         }
         },
@@ -1394,7 +1572,7 @@ vegaEmbed('#chart9', spec9, embedOpts);
   const spec11 = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "config": sharedConfig,
-    "width": "700",
+    "width": 700,
     "height": 380,
     "data": { "url": "data/poverty_income_state_2022.json" },
     "resolve": { "scale": { "x": "independent", "color": "independent" } },
@@ -1433,12 +1611,12 @@ vegaEmbed('#chart9', spec9, embedOpts);
             },
             "x": {
             "field": "poverty_absolute", "type": "quantitative",
-            "axis": { "title": "Absolute poverty rate (%)", "orient": "top", "titleColor": "#c0392b", "labelColor": "#c0392b" },
+            "axis": { "title": "Absolute poverty rate (%)", "orient": "top", "titleColor": "#b45309", "labelColor": "#b45309" },
             "scale": { "domain": [0, 25] }
             },
             "color": {
             "datum": "Absolute poverty rate (%)",
-            "scale": { "range": ["#c0392b"] },
+            "scale": { "range": ["#b45309"] },
             "legend": { "title": null, "symbolType": "circle", "symbolSize": 80, "orient": "top" }
             },
             "tooltip": [
@@ -1452,76 +1630,140 @@ vegaEmbed('#chart9', spec9, embedOpts);
 };
 vegaEmbed('#chart11', spec11, embedOpts);
   /* ════════════════════════════════════════════════════
-     CHART 12 — Radial bar / radar: crime profile by state
-     PLACEHOLDER
+     CHART 12 — Polar bar (nightingale rose): crime profile by state
+     Each crime type gets an equal angular slice; bar length = rate
   ════════════════════════════════════════════════════ */
   const spec12 = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "config": sharedConfig,
-    "width": 400,
-    "height": 450,
+    "width": 420,
+    "height": 460,
     "data": { "url": "data/crime_heatmap.json" },
     "transform": [
         { "filter": "datum.year == 2022" },
         {
-        "aggregate": [{ "op": "sum", "field": "rate_per_100k", "as": "total_rate" }],
-        "groupby": ["state", "type"]
+          "aggregate": [{ "op": "sum", "field": "rate_per_100k", "as": "total_rate" }],
+          "groupby": ["state", "type"]
         }
     ],
     "params": [
         {
-        "name": "selectedState",
-        "value": "W.P. Kuala Lumpur",
-        "bind": {
+          "name": "selectedState",
+          "value": "W.P. Kuala Lumpur",
+          "bind": {
             "input": "select",
             "options": ["Johor","Kedah","Kelantan","Melaka","Negeri Sembilan","Pahang","Perak","Perlis","Pulau Pinang","Sabah","Sarawak","Selangor","Terengganu","W.P. Kuala Lumpur"],
             "name": "Select state: "
-        }
+          }
         }
     ],
     "layer": [
         {
-        "transform": [{ "filter": "datum.state == selectedState" }],
-        "mark": { "type": "arc", "innerRadius": 50, "outerRadius": 160, "stroke": "#f5f0eb", "strokeWidth": 1.5 },
-        "encoding": {
-            "theta": { "field": "total_rate", "type": "quantitative", "stack": true },
-            "color": {
-            "field": "type", "type": "nominal",
-            "scale": {
-                "domain": ["theft vehicle motorcycle","theft other","break in","theft vehicle motorcar","robbery gang unarmed","robbery solo unarmed","causing injury","theft vehicle lorry","rape","robbery gang armed","robbery solo armed","murder"],
-                "range": ["#648FFF","#785EF0","#DC267F","#FE6100","#FFB000","#009E73","#56B4E9","#E69F00","#CC79A7","#0072B2","#D55E00","#F0E442"]
+          "transform": [{ "filter": "datum.state == selectedState" }],
+          "mark": {
+            "type": "arc",
+            "innerRadius": 28,
+            "stroke": "#f5f0eb",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "theta": {
+              "field": "type", "type": "ordinal",
+              "sort": ["theft vehicle motorcycle","theft other","break in","theft vehicle motorcar","robbery gang unarmed","robbery solo unarmed","causing injury","theft vehicle lorry","rape","robbery gang armed","robbery solo armed","murder"]
             },
-            "legend": { "title": "Crime type", "orient": "right", "labelFontSize": 10, "titleFontSize": 11, "columns": 1 }
+            "radius": {
+              "field": "total_rate", "type": "quantitative",
+              "scale": { "type": "sqrt", "zero": true, "rangeMin": 28, "rangeMax": 165 }
+            },
+            "color": {
+              "field": "type", "type": "nominal",
+              "sort": ["theft vehicle motorcycle","theft other","break in","theft vehicle motorcar","robbery gang unarmed","robbery solo unarmed","causing injury","theft vehicle lorry","rape","robbery gang armed","robbery solo armed","murder"],
+              "scale": {
+                "domain": ["theft vehicle motorcycle","theft other","break in","theft vehicle motorcar","robbery gang unarmed","robbery solo unarmed","causing injury","theft vehicle lorry","rape","robbery gang armed","robbery solo armed","murder"],
+                "range":  ["#4e79a7","#f28e2b","#e15759","#76b7b2","#59a14f","#edc948","#b07aa1","#ff9da7","#9c755f","#bab0ac","#17becf","#3d2b1f"]
+              },
+              "legend": {
+                "title": "Crime type",
+                "orient": "right",
+                "labelFontSize": 10,
+                "titleFontSize": 11,
+                "columns": 1
+              }
+            },
+            "opacity": {
+              "condition": {"test": "datum.type == 'theft vehicle motorcycle' || datum.type == 'theft other' || datum.type == 'break in'", "value": 1},
+              "value": 0.75
             },
             "tooltip": [
-            { "field": "type", "title": "Crime type" },
-            { "field": "total_rate", "title": "Rate per 100k", "format": ".1f" },
-            { "field": "state", "title": "State" }
+              { "field": "type", "title": "Crime type" },
+              { "field": "total_rate", "title": "Rate per 100k", "format": ".1f" },
+              { "field": "state", "title": "State" }
             ]
-        }
+          }
         },
         {
-        "transform": [
+          "transform": [
             { "filter": "datum.state == selectedState" },
             { "aggregate": [{ "op": "sum", "field": "total_rate", "as": "grand_total" }], "groupby": ["state"] }
-        ],
-        "mark": { "type": "text", "fontSize": 18, "fontWeight": 600, "color": "#1a2332", "align": "center", "baseline": "middle" },
-        "encoding": {
+          ],
+          "mark": { "type": "text", "fontSize": 16, "fontWeight": 700, "color": "#1a2332", "align": "center", "baseline": "middle" },
+          "encoding": {
             "text": { "field": "grand_total", "type": "quantitative", "format": ".0f" }
-        }
+          }
         },
         {
-        "transform": [{ "filter": "datum.state == selectedState" }],
-        "mark": { "type": "text", "fontSize": 10, "color": "#7a7773", "align": "center", "baseline": "middle", "dy": 22 },
-        "encoding": {
-            "text": { "value": "total rate" }
-        }
+          "transform": [{ "filter": "datum.state == selectedState" }],
+          "mark": { "type": "text", "fontSize": 9.5, "color": "#7a7773", "align": "center", "baseline": "middle", "dy": 20, "font": "DM Sans" },
+          "encoding": { "text": { "value": "total per 100k" } }
         }
     ]
-};
+  };
 vegaEmbed('#chart12', spec12, embedOpts);
 
 </script>
+
+<!-- ══════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════ -->
+<footer id="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>About this project</h4>
+        <p>
+          This data visualisation explores crime trends, geographic disparities, and socioeconomic
+          correlates in Malaysia from 2016 to 2023. It was produced as part of FIT2179 Data Visualisation II
+          at Monash University Malaysia.
+        </p>
+        <p style="margin-top:0.6rem;">
+          <strong>Author:</strong> Avinesh Muralitharan &nbsp;·&nbsp; <strong>Student ID:</strong> 35740620<br>
+          <strong>Published:</strong> May 2026
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Data Sources</h4>
+        <ul>
+          <li><a href="https://storage.data.gov.my/publicsafety/crime_district.csv" target="_blank">Crime by District — OpenDOSM</a></li>
+          <li><a href="https://storage.dosm.gov.my/hies/hh_income_state.csv" target="_blank">Household Income by State — DOSM HIES 2022</a></li>
+          <li><a href="https://storage.dosm.gov.my/hies/hh_poverty_state.csv" target="_blank">Household Poverty by State — DOSM HIES 2022</a></li>
+          <li><a href="https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS?locations=MY" target="_blank">Unemployment Rate — World Bank (SL.UEM.TOTL.ZS)</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Notes</h4>
+        <ul>
+          <li>Crime rate per 100,000 population derived from DOSM Population Statistics 2022.</li>
+          <li>All monetary values in Malaysian Ringgit (RM).</li>
+          <li>W.P. Kuala Lumpur, Putrajaya, and Labuan treated as separate administrative units.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Avinesh Muralitharan · Monash University Malaysia · FIT2179</span>
+      <span>Data: OpenDOSM · World Bank Open Data</span>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
