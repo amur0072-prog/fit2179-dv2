@@ -544,12 +544,7 @@
     <hr class="section-rule">
 
     <!-- Dumbbell + text side by side -->
-    <div class="col-chart-text chart-block">
-      <div class="chart-wrap">
-        <p class="chart-title">Crime rate change per state — 2016 vs 2023</p>
-        <div id="chart-dumbbell"></div>
-        <p class="caption">Each pair shows a state's journey from 2016 (dark) to 2023 (red). The longer the connecting line, the more dramatic the improvement. KL's gap is the widest — it fell the furthest, yet still leads the nation.</p>
-      </div>
+    <div class="col-text-chart chart-block">
       <div>
         <h3>W.P. Kuala Lumpur improved the most — but still leads nationally</h3>
         <p>
@@ -572,18 +567,12 @@
           raw count as a small one is proportionally safer.
         </div>
       </div>
+      <div class="chart-wrap">
+        <p class="chart-title">Crime rate change per state — 2016 vs 2023</p>
+        <div id="chart-dumbbell"></div>
+        <p class="caption">Each pair shows a state's journey from 2016 (dark) to 2023 (red). The longer the connecting line, the more dramatic the improvement. KL's gap is the widest — it fell the furthest, yet still leads the nation.</p>
+      </div>
     </div>
-
-    <!-- Slope chart -->
-    <div class="fullwidth-chart">
-      <p class="chart-title">Which states improved the most? (2016 → 2023)</p>
-      <div id="chart3"></div>
-    </div>
-
-  </div>
-</section>
-
-
 <!-- ══════════════════════════════════════════════════════
      SECTION 03 — WHAT KIND OF CRIME?
      Charts: Lollipop (6) · Stacked bar (7) · Heatmap (5)
@@ -655,14 +644,7 @@
     <hr class="section-rule">
 
     <!-- Bullet chart + text -->
-    <div class="col-chart-text chart-block">
-      <div class="chart-wrap">
-        <p class="chart-title">State crime rate vs. national average (2022)</p>
-        <div id="chart9"></div>
-      <p class="caption">
-        Bar = state crime rate per 100k. Vertical line = national average (151.2). Red bars sit above the national average — but notice that all above-average states are also the most urbanised, suggesting density matters more than wealth in predicting crime.
-      </p>
-      </div>
+    <div class="col-text-chart chart-block">
       <div>
         <h3>Why doesn't poverty predict crime here?</h3>
         <p>
@@ -681,6 +663,13 @@
         <div class="pull-quote">
           "Urban concentration, not just poverty, may be the missing variable."
         </div>
+      </div>
+      <div class="chart-wrap">
+        <p class="chart-title">State crime rate vs. national average (2022)</p>
+        <div id="chart9"></div>
+        <p class="caption">
+          Bar = state crime rate per 100k. Vertical line = national average (151.2). Red bars sit above the national average — but notice that all above-average states are also the most urbanised, suggesting density matters more than wealth in predicting crime.
+        </p>
       </div>
     </div>
 
@@ -1463,22 +1452,22 @@ vegaEmbed('#chart-dumbbell', specDumbbell, embedOpts);
         "transform": [
             { "filter": "datum.year == 2022 && datum.state == 'W.P. Kuala Lumpur'" }
         ],
-        "mark": { "type": "text", "align": "right", "dx": -10, "dy": -12, "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#c0392b", "fontWeight": 600 },
+        "mark": { "type": "text", "align": "right", "dx": 10, "dy": -12, "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#c0392b", "fontWeight": 600 },
         "encoding": {
             "x": { "field": "income_median", "type": "quantitative" },
             "y": { "field": "crime_rate_per_100k", "type": "quantitative" },
-            "text": { "value": "KL: richest — yet most crime-ridden.\nUrban density multiplies targets,\nnot just poverty." }
+            "text": { "value": "KL: richest — yet most crime-ridden.\nUrban density multiplies targets,\nnot just poverty ▼." }
         }
         },
         {
         "transform": [
             { "filter": "datum.year == 2022 && datum.state == 'Kelantan'" }
         ],
-        "mark": { "type": "text", "align": "left", "dx": 10, "dy": 12, "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#4a4845" },
+        "mark": { "type": "text", "align": "left", "dx": -5, "dy": 30, "fontSize": 9.5, "font": "DM Sans", "fontStyle": "italic", "color": "#4a4845" },
         "encoding": {
             "x": { "field": "income_median", "type": "quantitative" },
             "y": { "field": "crime_rate_per_100k", "type": "quantitative" },
-            "text": { "value": "Kelantan: lowest income,\nyet moderate crime —\ncommunity ties may offset poverty" }
+            "text": { "value": "▲ Kelantan: lowest income,\nyet moderate crime —\ncommunity ties may offset poverty" }
         }
         }
     ]
@@ -1493,7 +1482,7 @@ vegaEmbed('#chart8', spec8, embedOpts);
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "config": sharedConfig,
     "width": "container",
-    "height": 420,
+    "height": 500,
     "data": { "url": "data/crime_bullet_2022.json" },
     "transform": [
         { "calculate": "datum.above_avg ? '+' + round((datum.crime_rate - datum.national_avg) * 10) / 10 + ' above avg' : round((datum.national_avg - datum.crime_rate) * 10) / 10 + ' below avg'", "as": "diff_label" }
@@ -1636,7 +1625,7 @@ vegaEmbed('#chart11', spec11, embedOpts);
   const spec12 = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "config": sharedConfig,
-    "width": 420,
+    "width": 330,
     "height": 460,
     "data": { "url": "data/crime_heatmap.json" },
     "transform": [
